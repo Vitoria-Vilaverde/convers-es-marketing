@@ -1,0 +1,29 @@
+import pandas as pd
+import numpy as np
+from faker import Faker
+from datetime import datetime, timedelta
+
+# Configurar Faker para dados em português
+fake = Faker('pt_BR')
+
+# Gerar dados fictícios
+np.random.seed(42)
+num_rows = 1000
+
+data = {
+    'date': [datetime(2023, 1, 1) + timedelta(days=np.random.randint(0, 365)) for _ in range(num_rows)],
+    'job_role': [fake.job().split('/')[0] for _ in range(num_rows)],  # Cargos aleatórios
+    'city': [fake.city() for _ in range(num_rows)],
+    'clicks': np.random.poisson(lam=50, size=num_rows),  # Cliques seguindo distribuição de Poisson
+    'conversions': np.random.binomial(n=100, p=0.1, size=num_rows),  # Conversões baseadas em cliques
+    'cost': np.round(np.random.uniform(100, 5000, num_rows), 2),
+    'revenue': np.round(np.random.uniform(500, 10000, num_rows), 2)
+}
+
+df = pd.DataFrame(data)
+
+# Adicionar padrões fictícios (ex: mais conversões para "Gerente" em São Paulo)
+df.loc[(df['job_role'] == 'Gerente') & (df['city'] == 'São Paulo'), 'conversions'] += np.random.randint(5, 20)
+
+# Salvar como CSV
+df.to_csv('marketing_conversions_fake.csv', index=False)
