@@ -1,0 +1,25 @@
+from prophet import Prophet
+
+# Preparar dados no formato do Prophet (ds = data, y = target)
+df_prophet = ts_data.reset_index().rename(columns={'date': 'ds', 'conversions': 'y'})
+
+# Adicionar feriados fictícios (exemplo)
+feriados = pd.DataFrame({
+    'holiday': 'feriado_ficticio',
+    'ds': pd.to_datetime(['2023-01-01', '2023-12-25']),  # Datas fictícias
+    'lower_window': 0,
+    'upper_window': 1,
+})
+
+# Treinar modelo
+model_prophet = Prophet(holidays=feriados, yearly_seasonality=True, weekly_seasonality=True)
+model_prophet.fit(df_prophet)
+
+# Criar dataframe futuro (30 dias)
+future = model_prophet.make_future_dataframe(periods=30)
+forecast_prophet = model_prophet.predict(future)
+
+# Plotar componentes
+fig1 = model_prophet.plot_components(forecast_prophet)
+fig2 = model_prophet.plot(forecast_prophet)
+plt.show()
