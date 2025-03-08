@@ -1,0 +1,11 @@
+import pandas as pd
+
+# Carregar dados
+url = "https://github.com/fakeuser/marketing-data/raw/main/marketing_conversions_fake.csv"
+df = pd.read_csv(url)
+
+# Converter para datetime e agregar por data
+df['date'] = pd.to_datetime(df['date'])
+ts_data = df.groupby('date')['conversions'].sum().reset_index()
+ts_data = ts_data.set_index('date').asfreq('D')  # Garantir frequência diária
+ts_data = ts_data.fillna(0)  # Preencher dias sem dados com 0
