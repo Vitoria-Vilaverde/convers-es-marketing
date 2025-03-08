@@ -1,0 +1,115 @@
+1. Objetivo do Projeto
+Analisar conversões de marketing ao longo do tempo, segmentando por cargo (ex: gerente, analista) e localidade (ex: cidade, estado), e construir um modelo preditivo para estimar conversões futuras.
+
+2. Fontes de Dados
+CRM: Dados de clientes (cargos, empresas, localidades).
+
+Plataformas de Marketing: Google Ads, Meta Ads, LinkedIn Ads (cliques, impressões, custos).
+
+Web Analytics: Google Analytics (sessões, comportamento no site).
+
+Dados de Conversão: Vendas ou leads qualificados (data, valor, perfil do cliente).
+
+3. Modelagem de Dados (Data Modeling)
+Estrutura sugerida (Star Schema):
+
+Tabela Fato: fato_conversao
+Coluna	Descrição
+conversao_id	ID único da conversão
+data_id	Chave para a dimensão de data
+cargo_id	Chave para a dimensão de cargo
+localidade_id	Chave para a dimensão de localidade
+cliques	Número de cliques
+conversoes	Número de conversões
+custo	Custo da campanha
+receita	Receita gerada
+Dimensões:
+dim_data:
+
+data_id, data, mes, trimestre, ano, dia_da_semana.
+
+dim_cargo:
+
+cargo_id, titulo, departamento, senioridade.
+
+dim_localidade:
+
+localidade_id, cidade, estado, regiao, pais.
+
+4. Processamento e Transformação
+Limpeza:
+
+Remover duplicatas e valores nulos.
+
+Padronizar cargos (ex: "Gerente de Vendas" → "Gerente").
+
+Geocodificação para localidades (ex: converter endereços em coordenadas).
+
+Transformação:
+
+Agregar dados por data, cargo e localidade.
+
+Calcular métricas como:
+
+Taxa de Conversão: conversoes / cliques * 100.
+
+Custo por Conversão (CPC): custo / conversoes.
+
+Feature Engineering:
+
+Criar variáveis como:
+
+Sazonalidade (ex: feriados, finais de semana).
+
+Clusterização de localidades por desempenho.
+
+Médias móveis de conversões.
+
+5. Análise Exploratória (EDA)
+Exemplos de Insights:
+
+Como as conversões variam por mês/estação?
+
+Quais cargos têm maior taxa de conversão?
+
+Quais localidades são mais rentáveis?
+
+Ferramentas:
+
+SQL para consultas.
+
+Python (Pandas, Matplotlib/Seaborn) ou Power BI/Tableau para visualização.
+
+6. Modelagem Preditiva
+Objetivo: Prever conversões futuras com base em dados históricos.
+
+Variáveis:
+Features:
+
+Data (transformada em dia da semana, mês, etc.).
+
+Cargo (codificado one-hot).
+
+Localidade (codificada por região).
+
+Histórico de cliques e custos.
+
+Target:
+
+Número de conversões (regressão).
+
+Probabilidade de conversão (classificação).
+
+Modelos Sugeridos:
+Regressão Linear (baseline).
+
+Random Forest/XGBoost (para capturar interações não lineares).
+
+Séries Temporais (SARIMA, Prophet) para análise temporal.
+
+Deep Learning (LSTM se houver padrões temporais complexos).
+
+Avaliação:
+Métricas: MAE, MSE, RMSE (regressão); AUC-ROC (classificação).
+
+Validação cruzada temporal para evitar overfitting.
