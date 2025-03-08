@@ -1,0 +1,16 @@
+# Calcular métricas (exemplo: MAE nos últimos 30 dias)
+actual_last_30 = ts_data['conversions'][-30:].values
+mae_sarima = mean_absolute_error(actual_last_30, predicted_values[:30])
+mae_prophet = mean_absolute_error(actual_last_30, forecast_prophet['yhat'][-30:].values)
+
+print(f"MAE SARIMA: {mae_sarima}")
+print(f"MAE Prophet: {mae_prophet}")
+
+# Plotar comparação
+plt.figure(figsize=(12, 6))
+plt.plot(ts_data.index[-60:], ts_data['conversions'][-60:], label='Real')
+plt.plot(predicted_values.index, predicted_values, label='SARIMA', linestyle='--')
+plt.plot(forecast_prophet['ds'][-30:], forecast_prophet['yhat'][-30:], label='Prophet', linestyle='--')
+plt.legend()
+plt.title('Comparação SARIMA vs Prophet')
+plt.show()
