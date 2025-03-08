@@ -1,0 +1,10 @@
+import matplotlib.pyplot as plt
+
+# Plotar série temporal
+plt.figure(figsize=(12, 6))
+plt.plot(ts_data.index, ts_data['conversions'], color='blue')
+plt.title('Conversões Diárias ao Longo do Tempo')
+plt.xlabel('Data')
+plt.ylabel('Conversões')
+plt.grid(True)
+plt.show()
