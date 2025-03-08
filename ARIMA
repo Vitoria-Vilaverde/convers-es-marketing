@@ -1,0 +1,43 @@
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.stattools import adfuller
+
+# Teste de estacionariedade (Augmented Dickey-Fuller)
+def test_stationarity(series):
+    result = adfuller(series)
+    print(f'ADF Statistic: {result[0]}')
+    print(f'p-value: {result[1]}')
+
+test_stationarity(ts_data['conversions'])  # Se p-value > 0.05, dados não estacionários
+
+# Aplicar diferenciação se necessário
+ts_data['conversions_diff'] = ts_data['conversions'].diff().dropna()
+
+# Treinar SARIMA (parâmetros: (p, d, q), (P, D, Q, S))
+model_sarima = SARIMAX(
+    ts_data['conversions'],
+    order=(1, 1, 1),          # Parâmetros não sazonais (ARIMA)
+    seasonal_order=(1, 1, 1, 7)  # Sazonalidade semanal (S=7)
+)
+
+results_sarima = model_sarima.fit(disp=False)
+print(results_sarima.summary())
+
+# Previsão para os próximos 30 dias
+forecast_sarima = results_sarima.get_forecast(steps=30)
+predicted_values = forecast_sarima.predicted_mean
+confidence_intervals = forecast_sarima.conf_int()
+
+# Plotar previsão
+plt.figure(figsize=(12, 6))
+plt.plot(ts_data.index, ts_data['conversions'], label='Dados Reais')
+plt.plot(predicted_values.index, predicted_values, color='red', label='Previsão SARIMA')
+plt.fill_between(
+    confidence_intervals.index,
+    confidence_intervals.iloc[:, 0],
+    confidence_intervals.iloc[:, 1],
+    color='pink',
+    alpha=0.3
+)
+plt.title('Previsão de Conversões com SARIMA')
+plt.legend()
+plt.show()
